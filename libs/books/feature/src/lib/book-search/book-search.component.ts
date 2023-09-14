@@ -5,10 +5,13 @@ import {
   clearSearch,
   getAllBooks,
   ReadingListBook,
+  removeFromReadingList,
   searchBooks
 } from '@tmo/books/data-access';
 import { FormBuilder } from '@angular/forms';
-import { Book } from '@tmo/shared/models';
+import { Book,ReadingListItem } from '@tmo/shared/models';
+import { MatSnackBar } from "@angular/material/snack-bar";
+
 
 @Component({
   selector: 'tmo-book-search',
@@ -17,14 +20,15 @@ import { Book } from '@tmo/shared/models';
 })
 export class BookSearchComponent implements OnInit {
   books: ReadingListBook[];
-
+  tempBookForUndo : Book;
   searchForm = this.fb.group({
     term: ''
   });
 
   constructor(
     private readonly store: Store,
-    private readonly fb: FormBuilder
+    private readonly fb: FormBuilder,
+    private snackBar: MatSnackBar
   ) {}
 
   get searchTerm(): string {
@@ -37,6 +41,22 @@ export class BookSearchComponent implements OnInit {
     });
   }
 
+  showSnackbarDuration(content, action) {
+    const snack = this.snackBar.open(content, action);
+   
+    snack.onAction().subscribe(() => {
+      const item : ReadingListItem = {
+        title: this.tempBookForUndo && this.tempBookForUndo.title ? this.tempBookForUndo.title : '',
+        authors: this.tempBookForUndo && this.tempBookForUndo.authors ?  this.tempBookForUndo.authors : [],
+        description: this.tempBookForUndo && this.tempBookForUndo.description ? this.tempBookForUndo.description: '',
+        bookId: this.tempBookForUndo && this.tempBookForUndo.id ? this.tempBookForUndo.id: ''
+      }
+
+      this.store.dispatch(removeFromReadingList({item}));
+      
+    });
+  }
+
   formatDate(date: void | string) {
     return date
       ? new Intl.DateTimeFormat('en-US').format(new Date(date))
@@ -44,7 +64,9 @@ export class BookSearchComponent implements OnInit {
   }
 
   addBookToReadingList(book: Book) {
+    this.tempBookForUndo = book
     this.store.dispatch(addToReadingList({ book }));
+    this.showSnackbarDuration('undo what you have done','undo');
   }
 
   searchExample() {
