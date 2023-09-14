@@ -8,6 +8,7 @@ import {
   State
 } from './reading-list.reducer';
 import { Book, ReadingListItem } from '@tmo/shared/models';
+import { bookMarkedAsFinished } from './reading-list.actions';
 
 export const getReadingListState = createFeatureSelector<
   ReadingListPartialState,
@@ -27,6 +28,7 @@ export const getReadingListEntities = createSelector(
 
 export interface ReadingListBook extends Book, Omit<ReadingListItem, 'bookId'> {
   isAdded: boolean;
+  isFinished: boolean; 
 }
 
 export const getAllBooks = createSelector<
@@ -35,7 +37,8 @@ export const getAllBooks = createSelector<
   Record<string, ReadingListItem>,
   ReadingListBook[]
 >(getBooks, getReadingListEntities, (books, entities) => {
-  return books.map(b => ({ ...b, isAdded: Boolean(entities[b.id]) }));
+  
+  return books.map(b => ({ ...b, isAdded: Boolean(entities[b.id]), isFinished: entities[b.id]?.finished || false }));
 });
 
 export const getReadingList = createSelector(getReadingListState, selectAll);

@@ -7,7 +7,7 @@
       placeholder="Search for books to add to your reading list"
       formControlName="term"
     />
-    <button aria-label="search button" mat-icon-button matSuffix>
+    <button data-testing="click-search-icon" aria-label="search button" mat-icon-button matSuffix>
       <mat-icon>search</mat-icon>
     </button>
   </mat-form-field>
@@ -32,13 +32,24 @@
           <p [innerHTML]="b.description"></p>
           <div>
             <button
+              [attr.data-testing]="'button-to-make-read-' + b.id"
               [attr.aria-label]="'read' + b.title"
               mat-flat-button
               color="primary"
               (click)="addBookToReadingList(b)"
               [disabled]="b.isAdded"
+              *ngIf="!b.isAdded || (!b.isFinished && b.isAdded)"
             >
               Want to Read
+            </button>
+      
+            <button *ngIf="b.isFinished"
+              data-tesing="finished-button-main-page"
+              [disabled]="true"
+              mat-flat-button
+              color="primary"
+            >
+             Finished
             </button>
           </div>
         </div>
