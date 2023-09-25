@@ -1,6 +1,13 @@
 
-- Better Html structure to handle tab navigation for accesibility.
-- Speed of running of e2e test cases can be improved.
-- Models for Books and ReadingList can be handled more effeciently
+- Comments for all code/functions missing - comments  will have added value when other developers see the code to understand it.
+- book-search.component.html - should have aria labels for all interactive elements for better accesibility.
+- Initializing searchform in constructor/oninit will make sure searchform is created after component has initialized.
+- No Alt attributes to images. Having Alt attributes to images helps the screen reader users.
 
-Fixed - Keyboard Enter button click  on "Javascript" will ru nthe function to give javascript books
+
+Fixed 
+- fixed comments in book-search.component and reading-list.component.
+- fixed some more accesiility issues - added alt to images .
+- fixed all three accesibility issues.
+- fixed lint issues 
+- fixed unit test cases.
