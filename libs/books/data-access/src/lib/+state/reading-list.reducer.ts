@@ -47,11 +47,18 @@ const readingListReducer = createReducer(
       error: action.error
     };
   }),
-  on(ReadingListActions.addToReadingList, (state, action) =>
-    readingListAdapter.addOne({ bookId: action.book.id, ...action.book }, state)
+  on(ReadingListActions.addToReadingList, (state, action) => {
+    return readingListAdapter.addOne({ bookId: action.book.id, ...action.book }, state)
+  }
   ),
   on(ReadingListActions.removeFromReadingList, (state, action) =>
     readingListAdapter.removeOne(action.item.bookId, state)
+  ),
+  on(ReadingListActions.markAsFinishedItem, (state, action) => {
+
+    return readingListAdapter.updateOne({ id: action.item.bookId, changes: { finished: action.item.finished, finishedDate: action.item.finishedDate } }, state)
+
+  }
   )
 );
 
